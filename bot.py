@@ -165,8 +165,7 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
         excel_file = create_excel(data)
 
         # ارسال فایل
-        await update.message.reply_text(f"❌ Hata: {str(e)}")
-    
+        await update.message.reply_document(
             document=excel_file,
             filename="fatura.xlsx",
             caption="✅ Faturanız Excel'e dönüştürüldü!"
