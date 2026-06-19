@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 def extract_invoice_data(image_bytes: bytes) -> dict:
     image_b64 = base64.b64encode(image_bytes).decode("utf-8")
 
-    url = f"https://generativelanguage.googleapis.com/v1/models/gemini-pro-vision:generateContent?key={GEMINI_API_KEY}"
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash:generateContent?key={GEMINI_API_KEY}"
 
     payload = {
         "contents": [
