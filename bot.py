@@ -9,7 +9,6 @@ import openpyxl
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
 
-# تنظیمات
 TELEGRAM_TOKEN = os.environ["TELEGRAM_TOKEN"]
 GEMINI_API_KEY = os.environ["GEMINI_API_KEY"]
 
@@ -20,7 +19,7 @@ logger = logging.getLogger(__name__)
 def extract_invoice_data(image_bytes: bytes) -> dict:
     image_b64 = base64.b64encode(image_bytes).decode("utf-8")
 
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key={GEMINI_API_KEY}"
+    url = f"https://generativelanguage.googleapis.com/v1/models/gemini-pro-vision:generateContent?key={GEMINI_API_KEY}"
 
     payload = {
         "contents": [
@@ -33,7 +32,7 @@ def extract_invoice_data(image_bytes: bytes) -> dict:
                         }
                     },
                     {
-                        "text": """Bu faturadaki bilgileri çıkar ve SADECE aşağıdaki JSON formatında döndür, başka hiçbir şey yazma, markdown kullanma:
+                        "text": """Bu faturadaki bilgileri çıkar ve SADECE asagidaki JSON formatinda döndür, baska hicbir sey yazma, markdown kullanma:
 
 {
   "fatura_no": "...",
@@ -49,7 +48,7 @@ def extract_invoice_data(image_bytes: bytes) -> dict:
   "para_birimi": "..."
 }
 
-E�er bir alan görünmüyorsa boş string yaz."""
+Eger bir alan görünmüyorsa bos string yaz."""
                     }
                 ]
             }
@@ -83,8 +82,6 @@ def create_excel(data: dict) -> BytesIO:
     for i, (label, value) in enumerate(info_rows, start=1):
         ws.cell(row=i, column=1, value=label).font = Font(bold=True)
         ws.cell(row=i, column=2, value=value)
-
-    ws.cell(row=6, column=1, value="")
 
     headers = ["Aciklama", "Miktar", "Birim Fiyat", "Toplam"]
     for col, h in enumerate(headers, start=1):
@@ -152,7 +149,7 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(f"❌ Hata: {str(e)}")
 
 async def handle_document(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("📎 Lutfen faturayı fotograf olarak gonderin (dosya degil).")
+    await update.message.reply_text("📎 Lutfen faturayı fotograf olarak gonderin.")
 
 
 if __name__ == "__main__":
